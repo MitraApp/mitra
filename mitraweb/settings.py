@@ -128,7 +128,7 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/financials'
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
-# #Deployment
+#Deployment
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
