@@ -26,7 +26,7 @@ SECRET_KEY = '-rl5e=d4j9*05u3*kmlxfuc6+v%6zdwn38om$wta4&uq$ijou='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.14.178.199']
+ALLOWED_HOSTS = ['52.14.178.199', '127.0.0.1']
 
 
 # Application definition
@@ -125,3 +125,5 @@ STATIC_URL = '/static/'
 #Added
 LOGIN_REDIRECT_URL = '/financials'
 LOGOUT_REDIRECT_URL = '/accounts/login'
+
+SECURE_SSL_REDIRECT = True
