@@ -2,12 +2,12 @@
 class PlaidConfig:
     # Get your Plaid API keys from the dashboard: https://dashboard.plaid.com/account/keys
     PLAID_CLIENT_ID="5fea42cd354a870014624131" 
-    PLAID_SECRET="22e2c6eb9bc22466c8364ef6a00c1f" #sandbox
-    #PLAID_SECRET=c72a5b4a825276f8c9915379a9e391 #dev
+    #PLAID_SECRET="22e2c6eb9bc22466c8364ef6a00c1f" #sandbox
+    PLAID_SECRET="c72a5b4a825276f8c9915379a9e391" #dev
     # Use 'sandbox' to test with fake credentials in Plaid's Sandbox environment
     # Use 'development' to test with real credentials while developing
     # Use 'production' to go live with real users
-    PLAID_ENV="sandbox"
+    PLAID_ENV="development"
     # PLAID_PRODUCTS is a comma-separated list of products to use when
     # initializing Link, e.g. PLAID_PRODUCTS=auth,transactions.
     # see https://plaid.com/docs/api/tokens/#create-a-link_token for a complete list

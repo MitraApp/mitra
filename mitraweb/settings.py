@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'register.apps.RegisterConfig',
     'financials.apps.FinancialsConfig',
+    'friendship',
 ]
 
 MIDDLEWARE = [

@@ -191,3 +191,6 @@ def item(request):
 def pretty_print_response(response):
   print(json.dumps(response, indent=2, sort_keys=True))
 
+def format_error(e):
+  return {'error': {'display_message': e.display_message, 'error_code': e.code, 'error_type': e.type, 'error_message': e.message } }
+
