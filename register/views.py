@@ -18,6 +18,30 @@ client = plaid.Client(client_id=conf.PLAID_CLIENT_ID,
                       secret=conf.PLAID_SECRET,
                       environment=conf.PLAID_ENV)
 
+
+def register_app(request):
+    print("IN REGISTER_APP")
+    if request.method != 'POST': print("NOT A POST REQUEST")
+    username = request.POST['username']
+    password = request.POST['password']
+    conf_password = request.POST['conf_password']
+    email = request.POST['email']
+
+    if User.objects.filter(username=username).exists():
+        print("FAILED: Username already exists")
+    
+    elif password!=conf_password:
+        print("FAILED: Passwords do not match")
+    
+    else:
+        user = User.objects.create_user(username, email, password)
+        login(request, user)
+        print("SUCCESS: Logged in", username)
+
+    
+
+
+
 def register(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
