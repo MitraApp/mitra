@@ -1,4 +1,5 @@
 import plaid
+import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -7,6 +8,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import PlaidKey
 
@@ -19,13 +21,14 @@ client = plaid.Client(client_id=conf.PLAID_CLIENT_ID,
                       environment=conf.PLAID_ENV)
 
 
+@csrf_exempt
 def register_app(request):
-    print("IN REGISTER_APP")
+    params =  json.loads(request.body)
     if request.method != 'POST': print("NOT A POST REQUEST")
-    username = request.POST['username']
-    password = request.POST['password']
-    conf_password = request.POST['conf_password']
-    email = request.POST['email']
+    username = params['username']
+    password = params['password']
+    conf_password = params['conf_password']
+    email = params['email']
 
     if User.objects.filter(username=username).exists():
         print("FAILED: Username already exists")
@@ -37,6 +40,12 @@ def register_app(request):
         user = User.objects.create_user(username, email, password)
         login(request, user)
         print("SUCCESS: Logged in", username)
+
+        response = {}
+        return JsonResponse(response)
+    
+    response = {}
+    return JsonResponse(response)
 
     
 
@@ -93,6 +102,8 @@ def get_link_token(request):
     link_token = response['link_token']
 
     print("link_token", link_token)
+
+    print("USERNAME:", request.user.username)
     
     # Send the data to the client
     return JsonResponse(response)
