@@ -101,10 +101,7 @@ def get_link_token(request):
 
     link_token = response['link_token']
 
-    print("link_token", link_token)
-
-    print("USERNAME:", request.user.username)
-    
+    print('GET_LINK_TOKEN: Success') 
     # Send the data to the client
     return JsonResponse(response)
 
@@ -124,5 +121,23 @@ def get_access_token(request):
 
     print('access token: ' + exchange_response['access_token'])
     print('item ID: ' + exchange_response['item_id'])
+
+@csrf_exempt
+def get_access_token_app(request):
+    print("IN GET ACCESS TOKEN APP")
+
+    params = json.loads(request.body)
+    public_token = params['public_token']
+    exchange_response = client.Item.public_token.exchange(public_token)
+
+    key = PlaidKey(user=request.user, access_token=exchange_response['access_token'], item_id=exchange_response['item_id'])
+    key.save()
+
+    print('access token: ' + exchange_response['access_token'])
+    print('item ID: ' + exchange_response['item_id'])
+
+    response = {}
+    return JsonResponse(response)
+
 
 
