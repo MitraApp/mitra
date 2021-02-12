@@ -1,4 +1,5 @@
 import plaid
+import json
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -7,6 +8,7 @@ from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import PlaidKey
 
@@ -17,6 +19,37 @@ conf = PlaidConfig()
 client = plaid.Client(client_id=conf.PLAID_CLIENT_ID,
                       secret=conf.PLAID_SECRET,
                       environment=conf.PLAID_ENV)
+
+
+@csrf_exempt
+def register_app(request):
+    params =  json.loads(request.body)
+    if request.method != 'POST': print("NOT A POST REQUEST")
+    username = params['username']
+    password = params['password']
+    conf_password = params['conf_password']
+    email = params['email']
+
+    if User.objects.filter(username=username).exists():
+        print("FAILED: Username already exists")
+    
+    elif password!=conf_password:
+        print("FAILED: Passwords do not match")
+    
+    else:
+        user = User.objects.create_user(username, email, password)
+        login(request, user)
+        print("SUCCESS: Logged in", username)
+
+        response = {}
+        return JsonResponse(response)
+    
+    response = {}
+    return JsonResponse(response)
+
+    
+
+
 
 def register(request):
     # if this is a POST request we need to process the form data
@@ -68,8 +101,7 @@ def get_link_token(request):
 
     link_token = response['link_token']
 
-    print("link_token", link_token)
-    
+    print('GET_LINK_TOKEN: Success') 
     # Send the data to the client
     return JsonResponse(response)
 
@@ -89,5 +121,23 @@ def get_access_token(request):
 
     print('access token: ' + exchange_response['access_token'])
     print('item ID: ' + exchange_response['item_id'])
+
+@csrf_exempt
+def get_access_token_app(request):
+    print("IN GET ACCESS TOKEN APP")
+
+    params = json.loads(request.body)
+    public_token = params['public_token']
+    exchange_response = client.Item.public_token.exchange(public_token)
+
+    key = PlaidKey(user=request.user, access_token=exchange_response['access_token'], item_id=exchange_response['item_id'])
+    key.save()
+
+    print('access token: ' + exchange_response['access_token'])
+    print('item ID: ' + exchange_response['item_id'])
+
+    response = {}
+    return JsonResponse(response)
+
 
 
